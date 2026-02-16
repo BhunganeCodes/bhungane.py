@@ -104,9 +104,32 @@ def student_grade_processor(students):
         KeyError: If required keys missing
         ValueError: If grades list is empty
     """
-    # TODO: Implement this function
-    pass
+    res = {"passing": [], "failing": []}
 
+    for s in students:
+        if set(s.keys()) != {"name", "grades"}:
+            raise KeyError
+        
+        grades = s["grades"]
+        name = s["name"]
+
+        if not grades:
+            raise ValueError
+        
+        average = float(sum(grades) / len(grades))
+        average = round(average, 2)
+
+        if average < 60:
+            res["failing"].append({"name": name, "average": average})
+
+        else:
+            res["passing"].append({"name": name, "average": average})
+
+    return res
+student_grade_processor([
+    {"name": "Alice", "grades": [85, 90, 88]},
+    {"name": "Bob", "grades": [55, 60, 58]}
+])
 
 def transaction_batcher(transactions, batch_size):
     """
