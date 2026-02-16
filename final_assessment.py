@@ -53,8 +53,23 @@ def temperature_analyzer(temperatures, threshold):
         - "Warning: X readings below Y" otherwise
         - "Average: X" (always, formatted to 2 decimals)
     """
-    # TODO: Implement this function
-    pass
+    count = 0
+
+    for temp in temperatures:
+        if temp < threshold:
+            count += 1
+    
+    if not temperatures:
+        print("No temperature data")
+    
+    if len(temperatures) == 0:
+        pass
+    elif count > 0:
+        print(f"Warning: {count} readings below {threshold}")
+        print(f"Average: {sum(temperatures) / len(temperatures):.2f}")
+    elif count == 0:
+        print(f"All temperatures above threshold")
+        print(f"Average: {sum(temperatures) / len(temperatures):.2f}")
 
 
 def password_validator_with_retry(max_attempts):
