@@ -256,8 +256,24 @@ def data_pipeline_processor(raw_data, transformations):
     Raises:
         ValueError: For unknown transformations
     """
-    # TODO: Implement this function
-    pass
+
+    trans = ["double", "add_ten", "filter_even", "square"]
+
+    for t in transformations:
+        if t not in trans:
+            raise ValueError
+        
+    for t in transformations:
+        if t == "double":
+            raw_data = [data * 2 for data in raw_data]
+        if t == "filter_even":
+            raw_data = [data for data in raw_data if data % 2 == 0]
+        if t == "add_ten":
+            raw_data = [data + 10 for data in raw_data]
+        if t == "square":
+            raw_data = [data ** 2 for data in raw_data]
+    
+    return raw_data
 
 
 def leaderboard_ranker(scores):
