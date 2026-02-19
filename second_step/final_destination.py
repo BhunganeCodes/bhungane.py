@@ -119,7 +119,35 @@ def employee_performance_processor(employees):
         KeyError: If required keys are missing
         ValueError: If scores list is empty
     """
-    pass
+    res = {
+        "high_performers": [],
+        "needs_improvement": []
+    }
+
+    for employee in employees:
+        if len(employee) != 2:
+            raise KeyError
+        
+        name = employee["name"]
+        scores = employee["scores"]
+
+        if len(scores) > 0: 
+            average = round(sum(scores) / len(scores), 2) 
+
+        if len(scores) == 0:
+            raise ValueError
+        
+        if average >= 80:
+            res["high_performers"].append({"name": name, "average": average})
+        else:
+            res["needs_improvement"].append({"name": name, "average": average})
+    
+    return res
+
+employee_performance_processor([
+    {"name": "Alice", "scores": [90, 85, 88]},
+    {"name": "Bob",   "scores": [70, 65, 75]},
+])
 
 
 def order_batcher(orders, batch_size):
