@@ -13,25 +13,21 @@ def inventory_report_generator(inventory_data):
         KeyError: If required keys are missing
         ValueError: If unit_cost or stock_count is negative
     """
-    valid_keys = ["category", "unit_cost", "stock_count"]
     res = {}
-    
-    for data in inventory_data:
-        if len(data) != 3:
-            raise KeyError
-        
-        category = data["category"]
-        cost = data["unit_cost"]
-        stock_count = data["stock_count"]
 
-        if cost < 0 or stock_count < 0:
+    for item in inventory_data:
+        category = item["category"]
+        cost = item["unit_cost"]
+        stock = item["stock_count"]
+
+        if stock < 0 or cost < 0:
             raise ValueError
 
         if category not in res:
-            res[category] = {"total_value": cost * stock_count, "total_stock": stock_count}
+            res[category] = {"total_value": cost * stock, "total_stock": stock}
         else:
-            res[category]["total_value"] += cost * stock_count
-            res[category]["total_stock"] += stock_count
+            res[category]["total_value"] += cost * stock
+            res[category]["total_stock"] += stock
     
     return res
 
@@ -50,21 +46,25 @@ def rainfall_analyzer(readings, threshold):
         - "Warning: X readings above Y" otherwise
         - "Average: X" (always when data exists, formatted to 2 decimals)
     """
+    count = 0
+
     if not readings:
         print("No rainfall data")
-    
-    count = 0
-    
-    for reading in readings:
-        if reading > threshold:
-            count += 1
-    
-    if count > 0:
-        print(f"Warning: {count} readings above {threshold}")
-        print(f"Average: {(sum(readings) / len(readings)):.02f}")
-    elif len(readings) != 0:
-        print("All readings within threshold")
-        print(f"Average: {(sum(readings) / len(readings)):.02f}")
+
+    if len(readings) > 0:
+        average = (sum(readings) / len(readings))
+
+        for data in readings:
+            if data > threshold:
+                count += 1
+        
+        if count == 0:
+            print("All readings within threshold")
+            print(f"Average: {average:.02f}")
+
+        if count > 0:
+            print(f"Warning: {count} readings above {threshold}")
+            print(f"Average: {average:.02f}")
 
 
 def username_validator_with_retry(max_attempts):
@@ -90,16 +90,15 @@ def username_validator_with_retry(max_attempts):
         letters = any(char.isalpha() for char in username)
         digits = any(char.isdigit() for char in username)
         underscore = True if "_" in username else False
-        length = 5 <= len(username) <= 15
 
-        if letters and digits and username and length and underscore:
+        if letters and digits and underscore:
             print("Username accepted!")
             break
         else:
             print("Invalid username. Try again.")
             attempts += 1
     
-    if attempts >= max_attempts:
+    if attempts == max_attempts:
         print("Maximum attempts reached. Access denied.")
 
 
@@ -124,24 +123,23 @@ def employee_performance_processor(employees):
         "needs_improvement": []
     }
 
-    for employee in employees:
-        if len(employee) != 2:
+    for item in employees:
+        if len(item) != 2:
             raise KeyError
         
-        name = employee["name"]
-        scores = employee["scores"]
-
-        if len(scores) > 0: 
-            average = round(sum(scores) / len(scores), 2) 
+        name = item["name"]
+        scores = item["scores"]
 
         if len(scores) == 0:
             raise ValueError
         
+        average = round(sum(scores)/ len(scores), 2)
+
         if average >= 80:
             res["high_performers"].append({"name": name, "average": average})
         else:
             res["needs_improvement"].append({"name": name, "average": average})
-    
+
     return res
 
 
@@ -159,7 +157,15 @@ def order_batcher(orders, batch_size):
     Raises:
         ValueError: If batch_size < 1
     """
-    pass
+    if batch_size < 1:
+        raise ValueError
+    
+    res = []
+
+    for i in range(0, len(orders), batch_size):
+        res.append(orders[i:i+batch_size])
+    
+    return res
 
 
 def social_network_analyzer(network: dict[str, list[str]]):
@@ -178,7 +184,7 @@ def social_network_analyzer(network: dict[str, list[str]]):
     pass
 
 
-def count_vowels(s, count = 0):
+def count_vowels(s):
     """
     Count vowels in a string using RECURSION.
 
@@ -194,6 +200,7 @@ def count_vowels(s, count = 0):
         TypeError: If s is not a string
     """
     vowels = "aeiouAEIOU"
+
     if not isinstance(s, str):
         raise TypeError
     
@@ -202,7 +209,6 @@ def count_vowels(s, count = 0):
     
     if s[0] in vowels:
         return 1 + count_vowels(s[1:])
-    
     else:
         return count_vowels(s[1:])
     
@@ -262,4 +268,11 @@ def fibonacci(n):
     Raises:
         ValueError: If n is negative or not an integer
     """
-    pass
+    if n < 0:
+        raise ValueError
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)

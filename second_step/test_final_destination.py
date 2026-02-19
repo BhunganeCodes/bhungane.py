@@ -199,86 +199,86 @@ def test_employee_performance_processor_mixed():
     assert len(result["needs_improvement"]) == 1
 
 
-# # ──────────────────────────────────────────────────────────────────────────────
-# # Question 5 – Order Batcher
-# # ──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────────
+# Question 5 – Order Batcher
+# ──────────────────────────────────────────────────────────────────────────────
 
-# @pytest.mark.parametrize("orders, batch_size, expected", [
-#     (
-#         ["O1", "O2", "O3", "O4", "O5"],
-#         2,
-#         [["O1", "O2"], ["O3", "O4"], ["O5"]],
-#     ),
-#     (["A", "B", "C"], 3, [["A", "B", "C"]]),
-#     ([], 4, []),
-# ])
-# def test_order_batcher_logic(orders, batch_size, expected):
-#     assert order_batcher(orders, batch_size) == expected
-
-
-# def test_order_batcher_invalid_batch_size():
-#     with pytest.raises(ValueError):
-#         order_batcher(["A", "B"], 0)
+@pytest.mark.parametrize("orders, batch_size, expected", [
+    (
+        ["O1", "O2", "O3", "O4", "O5"],
+        2,
+        [["O1", "O2"], ["O3", "O4"], ["O5"]],
+    ),
+    (["A", "B", "C"], 3, [["A", "B", "C"]]),
+    ([], 4, []),
+])
+def test_order_batcher_logic(orders, batch_size, expected):
+    assert order_batcher(orders, batch_size) == expected
 
 
-# def test_order_batcher_batch_size_one():
-#     assert order_batcher(["X", "Y", "Z"], 1) == [["X"], ["Y"], ["Z"]]
+def test_order_batcher_invalid_batch_size():
+    with pytest.raises(ValueError):
+        order_batcher(["A", "B"], 0)
 
 
-# def test_order_batcher_large_dataset():
-#     orders = [f"ORD{i}" for i in range(1000)]
-#     result = order_batcher(orders, 50)
-#     assert len(result) == 20
-#     assert all(len(b) == 50 for b in result)
+def test_order_batcher_batch_size_one():
+    assert order_batcher(["X", "Y", "Z"], 1) == [["X"], ["Y"], ["Z"]]
 
 
-# def test_order_batcher_preserves_order():
-#     orders = ["first", "second", "third", "fourth"]
-#     result = order_batcher(orders, 2)
-#     assert result[0][0] == "first"
-#     assert result[-1][-1] == "fourth"
+def test_order_batcher_large_dataset():
+    orders = [f"ORD{i}" for i in range(1000)]
+    result = order_batcher(orders, 50)
+    assert len(result) == 20
+    assert all(len(b) == 50 for b in result)
 
 
-# # ──────────────────────────────────────────────────────────────────────────────
-# # Question 6 – Social Network Analyzer
-# # ──────────────────────────────────────────────────────────────────────────────
-
-# @pytest.mark.parametrize("network, expected", [
-#     (
-#         {"Alice": ["Bob", "Carol"], "Bob": ["Carol"], "Carol": []},
-#         {"total_follows": 3, "most_followed": "Carol", "no_followers": ["Alice"]},
-#     ),
-#     (
-#         {"X": [], "Y": [], "Z": []},
-#         {"total_follows": 0, "most_followed": None, "no_followers": ["X", "Y", "Z"]},
-#     ),
-#     ({}, {"total_follows": 0, "most_followed": None, "no_followers": []}),
-# ])
-# def test_social_network_analyzer_logic(network, expected):
-#     result = social_network_analyzer(network)
-#     assert result["total_follows"] == expected["total_follows"]
-#     assert set(result["no_followers"]) == set(expected["no_followers"])
-#     if expected["most_followed"] is None:
-#         assert result["most_followed"] is None
-#     else:
-#         # Accept any user with the maximum in-degree
-#         all_followed = [f for follows in network.values() for f in follows]
-#         max_count = max(all_followed.count(u) for u in network) if all_followed else 0
-#         top_users = [u for u in network if all_followed.count(u) == max_count]
-#         assert result["most_followed"] in top_users
+def test_order_batcher_preserves_order():
+    orders = ["first", "second", "third", "fourth"]
+    result = order_batcher(orders, 2)
+    assert result[0][0] == "first"
+    assert result[-1][-1] == "fourth"
 
 
-# def test_social_network_analyzer_single_user():
-#     result = social_network_analyzer({"Solo": []})
-#     assert result["total_follows"] == 0
-#     assert result["no_followers"] == ["Solo"]
+# # # ──────────────────────────────────────────────────────────────────────────────
+# # # Question 6 – Social Network Analyzer
+# # # ──────────────────────────────────────────────────────────────────────────────
+
+# # @pytest.mark.parametrize("network, expected", [
+# #     (
+# #         {"Alice": ["Bob", "Carol"], "Bob": ["Carol"], "Carol": []},
+# #         {"total_follows": 3, "most_followed": "Carol", "no_followers": ["Alice"]},
+# #     ),
+# #     (
+# #         {"X": [], "Y": [], "Z": []},
+# #         {"total_follows": 0, "most_followed": None, "no_followers": ["X", "Y", "Z"]},
+# #     ),
+# #     ({}, {"total_follows": 0, "most_followed": None, "no_followers": []}),
+# # ])
+# # def test_social_network_analyzer_logic(network, expected):
+# #     result = social_network_analyzer(network)
+# #     assert result["total_follows"] == expected["total_follows"]
+# #     assert set(result["no_followers"]) == set(expected["no_followers"])
+# #     if expected["most_followed"] is None:
+# #         assert result["most_followed"] is None
+# #     else:
+# #         # Accept any user with the maximum in-degree
+# #         all_followed = [f for follows in network.values() for f in follows]
+# #         max_count = max(all_followed.count(u) for u in network) if all_followed else 0
+# #         top_users = [u for u in network if all_followed.count(u) == max_count]
+# #         assert result["most_followed"] in top_users
 
 
-# def test_social_network_analyzer_no_isolates():
-#     network = {"A": ["B"], "B": ["A"]}
-#     result = social_network_analyzer(network)
-#     assert result["no_followers"] == []
-#     assert result["total_follows"] == 2
+# # def test_social_network_analyzer_single_user():
+# #     result = social_network_analyzer({"Solo": []})
+# #     assert result["total_follows"] == 0
+# #     assert result["no_followers"] == ["Solo"]
+
+
+# # def test_social_network_analyzer_no_isolates():
+# #     network = {"A": ["B"], "B": ["A"]}
+# #     result = social_network_analyzer(network)
+# #     assert result["no_followers"] == []
+# #     assert result["total_follows"] == 2
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -397,45 +397,45 @@ def test_count_vowels_recursive_params():
 #     assert result[-1][2] == 500
 
 
-# # ──────────────────────────────────────────────────────────────────────────────
-# # Question 10 – Fibonacci (Recursive)
-# # ──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────────
+# Question 10 – Fibonacci (Recursive)
+# ──────────────────────────────────────────────────────────────────────────────
 
-# @pytest.mark.parametrize("n, expected", [
-#     (0,  0),
-#     (1,  1),
-#     (2,  1),
-#     (5,  5),
-#     (10, 55),
-# ])
-# def test_fibonacci_logic(n, expected):
-#     assert fibonacci(n) == expected
-
-
-# def test_fibonacci_negative():
-#     with pytest.raises(ValueError):
-#         fibonacci(-1)
+@pytest.mark.parametrize("n, expected", [
+    (0,  0),
+    (1,  1),
+    (2,  1),
+    (5,  5),
+    (10, 55),
+])
+def test_fibonacci_logic(n, expected):
+    assert fibonacci(n) == expected
 
 
-# def test_fibonacci_non_integer():
-#     with pytest.raises(ValueError):
-#         fibonacci(3.5)
+def test_fibonacci_negative():
+    with pytest.raises(ValueError):
+        fibonacci(-1)
 
 
-# def test_fibonacci_is_recursive():
-#     with patch("new_assessment.fibonacci", wraps=fibonacci) as mocked:
-#         mocked(6)
-#         assert mocked.call_count > 1, "Recursion not detected"
+def test_fibonacci_non_integer():
+    with pytest.raises(ValueError):
+        fibonacci(3.5)
 
 
-# def test_fibonacci_base_cases():
-#     assert fibonacci(0) == 0
-#     assert fibonacci(1) == 1
+def test_fibonacci_is_recursive():
+    with patch("final_destination.fibonacci", wraps=fibonacci) as mocked:
+        mocked(6)
+        assert mocked.call_count > 1, "Recursion not detected"
 
 
-# def test_fibonacci_recursive_params():
-#     with patch("new_assessment.fibonacci", wraps=fibonacci) as mocked:
-#         mocked(5)
-#         for call in mocked.call_args_list:
-#             args, _ = call
-#             assert isinstance(args[0], int)
+def test_fibonacci_base_cases():
+    assert fibonacci(0) == 0
+    assert fibonacci(1) == 1
+
+
+def test_fibonacci_recursive_params():
+    with patch("final_destination.fibonacci", wraps=fibonacci) as mocked:
+        mocked(5)
+        for call in mocked.call_args_list:
+            args, _ = call
+            assert isinstance(args[0], int)
