@@ -239,46 +239,46 @@ def test_order_batcher_preserves_order():
     assert result[-1][-1] == "fourth"
 
 
-# # # ──────────────────────────────────────────────────────────────────────────────
-# # # Question 6 – Social Network Analyzer
-# # # ──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────────
+# Question 6 – Social Network Analyzer
+# ──────────────────────────────────────────────────────────────────────────────
 
-# # @pytest.mark.parametrize("network, expected", [
-# #     (
-# #         {"Alice": ["Bob", "Carol"], "Bob": ["Carol"], "Carol": []},
-# #         {"total_follows": 3, "most_followed": "Carol", "no_followers": ["Alice"]},
-# #     ),
-# #     (
-# #         {"X": [], "Y": [], "Z": []},
-# #         {"total_follows": 0, "most_followed": None, "no_followers": ["X", "Y", "Z"]},
-# #     ),
-# #     ({}, {"total_follows": 0, "most_followed": None, "no_followers": []}),
-# # ])
-# # def test_social_network_analyzer_logic(network, expected):
-# #     result = social_network_analyzer(network)
-# #     assert result["total_follows"] == expected["total_follows"]
-# #     assert set(result["no_followers"]) == set(expected["no_followers"])
-# #     if expected["most_followed"] is None:
-# #         assert result["most_followed"] is None
-# #     else:
-# #         # Accept any user with the maximum in-degree
-# #         all_followed = [f for follows in network.values() for f in follows]
-# #         max_count = max(all_followed.count(u) for u in network) if all_followed else 0
-# #         top_users = [u for u in network if all_followed.count(u) == max_count]
-# #         assert result["most_followed"] in top_users
-
-
-# # def test_social_network_analyzer_single_user():
-# #     result = social_network_analyzer({"Solo": []})
-# #     assert result["total_follows"] == 0
-# #     assert result["no_followers"] == ["Solo"]
+@pytest.mark.parametrize("network, expected", [
+    (
+        {"Alice": ["Bob", "Carol"], "Bob": ["Carol"], "Carol": []},
+        {"total_follows": 3, "most_followed": "Carol", "no_followers": ["Alice"]},
+    ),
+    (
+        {"X": [], "Y": [], "Z": []},
+        {"total_follows": 0, "most_followed": None, "no_followers": ["X", "Y", "Z"]},
+    ),
+    ({}, {"total_follows": 0, "most_followed": None, "no_followers": []}),
+])
+def test_social_network_analyzer_logic(network, expected):
+    result = social_network_analyzer(network)
+    assert result["total_follows"] == expected["total_follows"]
+    assert set(result["no_followers"]) == set(expected["no_followers"])
+    if expected["most_followed"] is None:
+        assert result["most_followed"] is None
+    else:
+        # Accept any user with the maximum in-degree
+        all_followed = [f for follows in network.values() for f in follows]
+        max_count = max(all_followed.count(u) for u in network) if all_followed else 0
+        top_users = [u for u in network if all_followed.count(u) == max_count]
+        assert result["most_followed"] in top_users
 
 
-# # def test_social_network_analyzer_no_isolates():
-# #     network = {"A": ["B"], "B": ["A"]}
-# #     result = social_network_analyzer(network)
-# #     assert result["no_followers"] == []
-# #     assert result["total_follows"] == 2
+def test_social_network_analyzer_single_user():
+    result = social_network_analyzer({"Solo": []})
+    assert result["total_follows"] == 0
+    assert result["no_followers"] == ["Solo"]
+
+
+def test_social_network_analyzer_no_isolates():
+    network = {"A": ["B"], "B": ["A"]}
+    result = social_network_analyzer(network)
+    assert result["no_followers"] == []
+    assert result["total_follows"] == 2
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -321,80 +321,80 @@ def test_count_vowels_recursive_params():
             assert isinstance(args[0], str)
 
 
-# # ──────────────────────────────────────────────────────────────────────────────
-# # Question 8 – Text Pipeline Processor
-# # ──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────────
+# Question 8 – Text Pipeline Processor
+# ──────────────────────────────────────────────────────────────────────────────
 
-# @pytest.mark.parametrize("raw_texts, transformations, expected", [
-#     (["hello", "world"], ["uppercase"], ["HELLO", "WORLD"]),
-#     (["  hi  ", " there "], ["strip"], ["hi", "there"]),
-#     (["keep", "", "me", ""], ["remove_empty"], ["keep", "me"]),
-#     (["abc", "xyz"], ["reverse"], ["cba", "zyx"]),
-#     ([], ["uppercase"], []),
-# ])
-# def test_text_pipeline_processor_logic(raw_texts, transformations, expected):
-#     assert text_pipeline_processor(raw_texts, transformations) == expected
-
-
-# def test_text_pipeline_processor_unknown_transformation():
-#     with pytest.raises(ValueError):
-#         text_pipeline_processor(["hello"], ["shout"])
+@pytest.mark.parametrize("raw_texts, transformations, expected", [
+    (["hello", "world"], ["uppercase"], ["HELLO", "WORLD"]),
+    (["  hi  ", " there "], ["strip"], ["hi", "there"]),
+    (["keep", "", "me", ""], ["remove_empty"], ["keep", "me"]),
+    (["abc", "xyz"], ["reverse"], ["cba", "zyx"]),
+    ([], ["uppercase"], []),
+])
+def test_text_pipeline_processor_logic(raw_texts, transformations, expected):
+    assert text_pipeline_processor(raw_texts, transformations) == expected
 
 
-# def test_text_pipeline_processor_chained():
-#     result = text_pipeline_processor(["  hello  ", "  "], ["strip", "remove_empty", "uppercase"])
-#     assert result == ["HELLO"]
+def test_text_pipeline_processor_unknown_transformation():
+    with pytest.raises(ValueError):
+        text_pipeline_processor(["hello"], ["shout"])
 
 
-# def test_text_pipeline_processor_no_transformations():
-#     assert text_pipeline_processor(["a", "b"], []) == ["a", "b"]
+def test_text_pipeline_processor_chained():
+    result = text_pipeline_processor(["  hello  ", "  "], ["strip", "remove_empty", "uppercase"])
+    assert result == ["HELLO"]
 
 
-# def test_text_pipeline_processor_reverse_then_uppercase():
-#     result = text_pipeline_processor(["abc"], ["reverse", "uppercase"])
-#     assert result == ["CBA"]
+def test_text_pipeline_processor_no_transformations():
+    assert text_pipeline_processor(["a", "b"], []) == ["a", "b"]
 
 
-# # ──────────────────────────────────────────────────────────────────────────────
-# # Question 9 – Score Ranker
-# # ──────────────────────────────────────────────────────────────────────────────
-
-# @pytest.mark.parametrize("scores, expected", [
-#     (
-#         [("Alice", 100), ("Bob", 150), ("Charlie", 120)],
-#         [("Bob", 150, 1), ("Charlie", 120, 2), ("Alice", 100, 3)],
-#     ),
-#     ([("Solo", 42)], [("Solo", 42, 1)]),
-#     ([], []),
-# ])
-# def test_score_ranker_logic(scores, expected):
-#     assert score_ranker(scores) == expected
+def test_text_pipeline_processor_reverse_then_uppercase():
+    result = text_pipeline_processor(["abc"], ["reverse", "uppercase"])
+    assert result == ["CBA"]
 
 
-# def test_score_ranker_tied_scores():
-#     result = score_ranker([("A", 100), ("B", 100), ("C", 90)])
-#     assert result[0][2] == 1
-#     assert result[1][2] == 1
-#     assert result[2][2] == 3   # rank skips to 3
+# ──────────────────────────────────────────────────────────────────────────────
+# Question 9 – Score Ranker
+# ──────────────────────────────────────────────────────────────────────────────
+
+@pytest.mark.parametrize("scores, expected", [
+    (
+        [("Alice", 100), ("Bob", 150), ("Charlie", 120)],
+        [("Bob", 150, 1), ("Charlie", 120, 2), ("Alice", 100, 3)],
+    ),
+    ([("Solo", 42)], [("Solo", 42, 1)]),
+    ([], []),
+])
+def test_score_ranker_logic(scores, expected):
+    assert score_ranker(scores) == expected
 
 
-# def test_score_ranker_all_tied():
-#     result = score_ranker([("X", 50), ("Y", 50), ("Z", 50)])
-#     assert all(r[2] == 1 for r in result)
+def test_score_ranker_tied_scores():
+    result = score_ranker([("A", 100), ("B", 100), ("C", 90)])
+    assert result[0][2] == 1
+    assert result[1][2] == 1
+    assert result[2][2] == 3   # rank skips to 3
 
 
-# def test_score_ranker_invalid_tuple():
-#     with pytest.raises(ValueError):
-#         score_ranker([("Player", 100, "extra")])
+def test_score_ranker_all_tied():
+    result = score_ranker([("X", 50), ("Y", 50), ("Z", 50)])
+    assert all(r[2] == 1 for r in result)
 
 
-# def test_score_ranker_large_dataset():
-#     scores = [(f"P{i}", i) for i in range(500, 0, -1)]
-#     result = score_ranker(scores)
-#     assert result[0][1] == 500
-#     assert result[-1][1] == 1
-#     assert result[0][2] == 1
-#     assert result[-1][2] == 500
+def test_score_ranker_invalid_tuple():
+    with pytest.raises(ValueError):
+        score_ranker([("Player", 100, "extra")])
+
+
+def test_score_ranker_large_dataset():
+    scores = [(f"P{i}", i) for i in range(500, 0, -1)]
+    result = score_ranker(scores)
+    assert result[0][1] == 500
+    assert result[-1][1] == 1
+    assert result[0][2] == 1
+    assert result[-1][2] == 500
 
 
 # ──────────────────────────────────────────────────────────────────────────────

@@ -181,8 +181,33 @@ def social_network_analyzer(network: dict[str, list[str]]):
             - most_followed (str | None): user who appears most in others' follow lists
             - no_followers (list[str]): users that nobody follows
     """
-    pass
+    
+    res = {
+        "total_follows": 0,
+        "most_followed": None,
+        "no_followers": []
+    }
 
+    follow_tracker = {}
+
+    for key, value in network.items():
+        print(f"Key: {key}")
+        print(f"Value: {value}")
+        res["total_follows"] += len(value)
+
+        for item in value:
+            if item not in follow_tracker:
+                follow_tracker[item] = 1
+            else:
+                follow_tracker[item] += 1
+    
+    if follow_tracker:
+        res["most_followed"] = max(follow_tracker, key=lambda k: follow_tracker[k])
+    
+    res["no_followers"] = [user for user in network if user not in follow_tracker]
+        
+    return res
+    
 
 def count_vowels(s):
     """
@@ -233,7 +258,27 @@ def text_pipeline_processor(raw_texts, transformations):
     Raises:
         ValueError: For unknown transformations
     """
-    pass
+    allowed_trans = ["uppercase", "strip", "remove_empty", "reverse"]
+
+    for t in transformations:
+        if t not in allowed_trans:
+            raise ValueError
+        
+        for idx, text in enumerate(raw_texts):
+            if t == "uppercase":
+                raw_texts[idx] = raw_texts[idx].upper()
+            if t == "strip":
+                raw_texts[idx] = raw_texts[idx].strip()
+            if t == "remove_empty":
+                raw_texts[idx] = raw_texts[idx].replace(" ", "")
+            if t == "reverse":
+                raw_texts[idx] = raw_texts[idx][::-1]
+
+    for text in raw_texts:
+        if text == "":           
+            raw_texts.remove(text)
+
+    return raw_texts
 
 
 def score_ranker(scores):
@@ -250,7 +295,25 @@ def score_ranker(scores):
     Raises:
         ValueError: If any tuple doesn't have exactly 2 elements
     """
-    pass
+    res = []
+    
+    for score in scores:
+        if len(score) != 2:
+            raise ValueError
+    
+    ranked = sorted(scores, key=lambda s: s[1], reverse=True)
+    
+    rank = 1
+
+    for idx, (name, score) in enumerate(ranked):
+        
+        if idx > 0 and score == ranked[idx - 1][1]:
+            res.append((name, score, res[-1][2]))
+        else:
+            rank = idx + 1 
+            res.append((name, score, rank))
+    
+    return res
 
 
 def fibonacci(n):
