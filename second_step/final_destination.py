@@ -50,8 +50,23 @@ def rainfall_analyzer(readings, threshold):
         - "Warning: X readings above Y" otherwise
         - "Average: X" (always when data exists, formatted to 2 decimals)
     """
-    pass
+    if not readings:
+        print("No rainfall data")
+    
+    count = 0
+    
+    for reading in readings:
+        if reading > threshold:
+            count += 1
+    
+    if count > 0:
+        print(f"Warning: {count} readings above {threshold}")
+        print(f"Average: {(sum(readings) / len(readings)):.02f}")
+    elif len(readings) != 0:
+        print("All readings within threshold")
+        print(f"Average: {(sum(readings) / len(readings)):.02f}")
 
+rainfall_analyzer([5, 25, 8, 30], threshold=20)
 
 def username_validator_with_retry(max_attempts):
     """
